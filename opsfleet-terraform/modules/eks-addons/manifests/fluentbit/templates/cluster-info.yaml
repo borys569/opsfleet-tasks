@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit-cluster-info
+data:
+  cluster.name: {{ .Values.cluster_name }}
+  http.port: "2020"
+  http.server: "On"
+  logs.region: {{  .Values.aws_region }}
+  read.head: "Off"
+  read.tail: "On"
