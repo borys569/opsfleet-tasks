@@ -1,0 +1,61 @@
+
+
+##### Role ####
+
+https://docs.aws.amazon.com/eks/latest/userguide/associate-service-account-role.html
+
+- create a role
+
+role:
+  - poolicy = waht to do
+  - trust relation = who can do this
+
+- anootate SA with the role arn to bind them
+
+eks.amazonaws.com/role-arn: arn:aws:iam::975050295384:role/my-role
+
+
+==========================
+
+
+oidc_provider=$(aws eks describe-cluster --name eks-opsfleet --query "cluster.identity.oidc.issuer" --output text | sed -e "s/^https:\/\///")
+
+
+- role created maually
+
+
+aws iam create-role --role-name my-role --assume-role-policy-document file://trust-relationship.json --description "my-role-description"
+
+
+------
+
+- create role
+
+
+kubectl annotate serviceaccount -n default  my-service-account eks.amazonaws.com/role-arn=arn:aws:iam::975050295384:role/my-role
+
+
+#### Pod ###
+
+cat >my-deployment.yaml <<EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      serviceAccountName: my-service-account
+      containers:
+      - name: my-app
+        image: woahbase/alpine-awscli
+EOF
+
+
+kubectl run -i --tty temp-shell --image=amazon/aws-cli --restart=Never --command -- /bin/sh

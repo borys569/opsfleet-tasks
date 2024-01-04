@@ -16,6 +16,4 @@ module "s3" {
   aws_account_id = var.aws_account_id
   versioning     = try(each.value["versioning"], "Disabled")
 
-  tags = var.tags["gitlab"]
-
 }

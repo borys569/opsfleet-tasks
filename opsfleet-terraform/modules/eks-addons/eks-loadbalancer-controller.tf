@@ -14,6 +14,7 @@ module "aws_load_balancer_controller_irsa_role" {
   }
 }
 
+# https://artifacthub.io/packages/helm/aws/aws-load-balancer-controller/1.5.5
 resource "helm_release" "aws_load_balancer_controller" {
   name = "aws-load-balancer-controller"
 

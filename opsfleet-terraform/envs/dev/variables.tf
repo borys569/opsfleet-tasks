@@ -9,20 +9,11 @@ variable "aws_account_id" {
   description = "AWS Account Number"
 }
 
-variable "tags" {
-  description = "Tags for resources"
-  # var.tags["pelias"]
-  default = {
-    gitlab = {
-      service = "gitlab"
-    }
-    pelias = {
-      service = "pelias"
-    }
-  }
-}
-
 #### EKS #####
+
+variable "cluster_name" {
+  default = "eks-opsfleet"
+}
 
 variable "vpc_id" {
   default = "vpc-00ae6ef3f15d59c25"
@@ -30,13 +21,17 @@ variable "vpc_id" {
 }
 
 variable "subnet_ids" {
-  # default = ["subnet-09efd80c2d17f0561", "subnet-077762943ffa15fc8", "subnet-0e33454352968f6cc"]
   default = ["subnet-09efd80c2d17f0561", "subnet-0e33454352968f6cc"]
   description = "Private subnets for the cluster"
 }
 
 variable "eks_instance_types"  {
   default = ["t2.medium"]
+}
+
+variable "node_disk_size" {
+  default = 10
+  description = "node disk size in GB"
 }
 
 /*

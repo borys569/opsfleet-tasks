@@ -35,32 +35,29 @@ provider "aws" {
 
 }
 
-### providers for 'eks-opsfleet' cluster ###
-/*
-when adding clsters add providers with new alias and pass to the module
-*/
+provider "kubernetes" {
+  #alias                  = "v3-eks-dev"
+  host                   = module.eks_dev.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_dev.cluster_certificate_authority_data)
 
-# provider "kubernetes" {
-#   alias                  = "eks-opsfleet"
-#   host                   = data.aws_eks_cluster.eks_dev.endpoint
-#   cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks_dev.certificate_authority[0].data)
-#   token                  = data.aws_eks_cluster_auth.eks_dev.token
-# }
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    args        = ["eks", "get-token", "--cluster-name", module.eks_dev.cluster_name]
+    command     = "aws"
+  }
+}
 
-# provider "helm" {
-#   alias                    = "eks-opsfleet"
-#   kubernetes {
-#     host                   = data.aws_eks_cluster.eks_dev.endpoint
-#     cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks_dev.certificate_authority[0].data)
-#     token                  = data.aws_eks_cluster_auth.eks_dev.token
-#   }
-# }
+provider "helm" {
+  #alias                   = "v3-eks-dev"
+  kubernetes {
+    host                   = module.eks_dev.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks_dev.cluster_certificate_authority_data)
 
-# provider "kubectl" {
-#   alias                  = "eks-opsfleet"
-#   host                   = data.aws_eks_cluster.eks_dev.endpoint
-#   cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks_dev.certificate_authority[0].data)
-#   token                  = data.aws_eks_cluster_auth.eks_dev.token
-#   load_config_file       = false # do not use local configfile
-# }
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      args        = ["eks", "get-token", "--cluster-name", module.eks_dev.cluster_name]
+      command     = "aws"
+  }
+  }
+}
 

@@ -28,7 +28,7 @@ variable "versioning" {
 }
 
 variable "tags" {
-  default = ""
+  default = {}
 }
 
 variable "force_destroy" {
