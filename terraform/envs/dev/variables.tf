@@ -16,22 +16,27 @@ variable "cluster_name" {
 }
 
 variable "vpc_id" {
-  default = "vpc-00ae6ef3f15d59c25"
+  default     = "vpc-00ae6ef3f15d59c25"
   description = "VPC to deploy the cluster"
 }
 
 variable "subnet_ids" {
-  default = ["subnet-09efd80c2d17f0561", "subnet-0e33454352968f6cc"]
+  default     = ["subnet-09efd80c2d17f0561", "subnet-0e33454352968f6cc"]
   description = "Private subnets for the cluster"
 }
 
-variable "eks_instance_types"  {
+variable "eks_instance_types" {
   default = ["t2.medium"]
 }
 
 variable "node_disk_size" {
-  default = 10
+  default     = 10
   description = "node disk size in GB"
+}
+
+variable "eks_namespaces" {
+  default     = ["dev"]
+  description = "The list of namespaces to create in the cluster"
 }
 
 /*

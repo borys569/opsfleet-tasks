@@ -1,17 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-app
+  name: nginx
 spec:
   selector:
     matchLabels:
-      app: my-app
+      app: nginx
   template:
     metadata:
       labels:
-        app: my-app
+        app: nginx
     spec:
       serviceAccountName: my-service-account
       containers:
-      - name: my-app
-        image: woahbase/alpine-awscli
+      - name: nginx
+        image: nginx
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-deploy
+  labels:
+    app: dev
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: nginx

@@ -1,10 +1,3 @@
-locals {
-  cluster_name   = "eks-opsfleet"
-  node_disk_size = 10
-}
-
-#####################
-
 module "eks_dev" {
 
   source                          = "terraform-aws-modules/eks/aws"
@@ -51,7 +44,7 @@ module "eks_dev" {
       max_size     = 1
 
       instance_types = var.eks_instance_types
-      capacity_type = "ON_DEMAND"
+      capacity_type  = "ON_DEMAND"
 
       block_device_mappings = {
         xvda = {
@@ -66,10 +59,10 @@ module "eks_dev" {
         }
       }
 
-    # allows fluentbit to write to cliudwatch
-    iam_role_additional_policies = {
-      CloudWatchAgentServerPolicy = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
-    }
+      # allows fluentbit to write to cliudwatch
+      iam_role_additional_policies = {
+        CloudWatchAgentServerPolicy = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+      }
 
       labels = {
         role = "wg-1-${var.cluster_name}"
@@ -78,30 +71,31 @@ module "eks_dev" {
     }
   }
 
-#   aws_auth_users = [
+  #   aws_auth_users = [
 
-# this section allows to add users to EKS cluster
-# please add the nessesary users names and ARNs following the syntax below
-# system:masters - is a default role with admin rights
-# you may add a more restricted roles for developers if needed.
+  # this section allows to add users to EKS cluster
+  # please add the nessesary users names and ARNs following the syntax below
+  # system:masters - is a default role with admin rights
+  # you may add a more restricted roles for developers if needed.
+  # I have defined "backend-developers" role. You can see the permissions in terraform/modules/eks-addons/rbac.tf
 
-#     # admins
+  #     # admins
 
-#     {
-#       userarn  = "arn:aws:iam::${var.aws_account_id}:user/name.name1"
-#       username = "name.name1"
-#       groups   = ["system:masters"]
-#     },
+  #     {
+  #       userarn  = "arn:aws:iam::${var.aws_account_id}:user/name.name1"
+  #       username = "name.name1"
+  #       groups   = ["system:masters"]
+  #     },
 
-#     # developers
+  #     # developers
 
-#     {
-#       userarn  = "arn:aws:iam::${var.aws_account_id}:user/name.name2"
-#       username = "name.name2"
-#       groups   = ["backend-developers"]
-#     },
+  #     {
+  #       userarn  = "arn:aws:iam::${var.aws_account_id}:user/name.name2"
+  #       username = "name.name2"
+  #       groups   = ["backend-developers"]
+  #     },
 
-#   ]
+  #   ]
 
 }
 
@@ -114,9 +108,9 @@ module "eks_dev_addons" {
   cluster_name      = var.cluster_name
   oidc_provider_arn = module.eks_dev.oidc_provider_arn
 
-  namespaces = []
+  namespaces = var.eks_namespaces
 
   aws_account_id = var.aws_account_id
-  role_for_sa = aws_iam_role.s3_read_write_decrypt.name
+  role_for_sa    = aws_iam_role.s3_read_write_decrypt.name
 
 }

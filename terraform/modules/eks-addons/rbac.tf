@@ -38,7 +38,6 @@ resource "kubernetes_service_account" "my-service-account" {
   metadata {
     name      = "my-service-account"
     namespace = "default"
-    # Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::975050295384:role/S3ReadWriteDecryptRole
     annotations = {
       "eks.amazonaws.com/role-arn" = "arn:aws:iam::${var.aws_account_id}:role/S3ReadWriteDecryptRole"
     }

@@ -1,5 +1,4 @@
 variable "bucket_name" {
-  #"com.loopglobal.gov.www"
   type = string
 }
 
