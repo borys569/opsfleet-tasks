@@ -12,25 +12,14 @@ Provide one or two options for how would you propose them to change how they sav
 
 ## AWS secret manager ##
 
-## 1
-
-I would recommend using AWS secret manager. It is a native AWS solution which is really easy to integrate with.
-The secret manager allows to store secrets and control over the access to the secrets via IAM.
-The approach can look like this:
+Since the customer is using AWS services, the most straightforward and easy to manage solution would be AWS secret manager.
+The secret manager allows to store secrets and control the access to the secrets via IAM roles. I've been using this approach on my recent project and all the devs were really happy with this.
+The approach will look like this:
 - Store secrets in the secret manager;
 - For each application create a role to allow reading only the required secrets;
-- The role is assigned to a Service Account in EKS (IAM roles for service accounts), allowing a pod to read certain secret.
+- The role is assigned to a Service Account in EKS (IAM roles for service accounts), allowing a pod to read certain secrets.
+- There are a few way to read the secrets:
+    - the app can natively consume AWS secrets (requires small changes on the app code side)
+    - secrets can be mounted as files to the pods. This way, no code changes are required.
 
-## 2
-
-https://community.aws/tutorials/navigating-amazon-eks/eks-integrate-secrets-manager
-
-## Kubernetes secrets ##
-
-Another simple solution is to use native kubernetes secrets
-With this approach you can:
-- avoid keeping secrets in the Code, which is a big security risc;
-- granularly control the application(pod) access to the secrets;
-This isn't the most secure approach but it covers the basic security risks while being easy to implement and manage. And in may cases, simple implementation means robust system. And less complexity means smaller attack surface. 
-There is an intresting article about the security of kubernetes secrets: https://www.macchaffee.com/blog/2022/k8s-secrets/
-
+Detailed information on this approach can be found here: https://community.aws/tutorials/navigating-amazon-eks/eks-integrate-secrets-manager
