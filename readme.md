@@ -1,14 +1,16 @@
-This file provides the instructions on how to use this repostory.
+This file provides the instructions on how to use this repo.
 
 # Task #
 
-One of our clients is running Kubernetes on AWS (EKS + Terraform). At the moment, they store secrets like database passwords in a configuration file of the application, which is stored along with the code in Github. The resulting application pod is getting an ENV variable with the name of the environment, like staging or production, and the configuration file loads the relevant secrets for that environment.
+You've joined a new and growing startup.
 
-We would like to help them improve the way they work with this kind of sensitive data.
+The company wants to build its initial Kubernetes infrastructure on AWS.
 
-Please also note that they have a small team and their capacity for self-hosted solutions is limited.
+They have asked you if you can help create the following:
 
-Provide one or two options for how would you propose them to change how they save and manage their secrets.
+Terraform code that deploys an EKS cluster (whatever latest version is currently available) into an existing VPC
+The terraform code should also prepare anything needed for a pod to be able to assume an IAM role
+Include a short readme that explains how to use the Terraform repo and that also demonstrates how an end-user (a developer from the company) can run a pod on this new EKS cluster and also have an IAM role assigned that allows that pod to access an S3 bucket.
 
 # Answer #
 
@@ -47,7 +49,7 @@ Provide one or two options for how would you propose them to change how they sav
 
 ## Access to the cluster
 
-- Once the cluster is created, the AWS account which executed the terraform command gets admin access to the cluster. If you need to define other users, please add their ARNs in the `eks-cluster.tf` file. See eks-cluster.tf for the details. there are comments in the file explainig how to add additional accounts.
+- Once the cluster is created, the AWS account which executed the terraform command gets admin access to the cluster. If you need to define other users, please add their ARNs in the `eks-cluster.tf` file under `aws_auth_users` section. See eks-cluster.tf for the details. There are comments in the file explainig how to add additional accounts.
 
 
 ## Connecting to the cluster with kubectl cli
@@ -56,9 +58,10 @@ Provide one or two options for how would you propose them to change how they sav
 - Verify that you can connect with AWS cli. AWS will respond with your user details.
  `aws sts get-caller-identity`
 
-- generate kubectl config ( ~/.kube/config ). The file holds your keys for the cluster
- `aws eks update-kubeconfig --name <clustername>`
+- generate kubectl config ( ~/.kube/config ). The file holds your keys for the cluster. If you changed the name of the cluster in terraform, make sure you provide the same cluster name here:
+ `aws eks update-kubeconfig --name eks-opsfleet`
 
+- install kubectl (use `brew` or another method of your choice)
 - test cluster connection
  `kubectl get po -A`
 
@@ -84,5 +87,6 @@ The files for this section are located in the "yamls" folder.
        aws s3 ls
        ```
 
-- To create actual deployment with your app, you may use _deployment-eample.yaml file. Replace the image name with your application image name. Please note that this deployment does not expose any app ports as services and does not configure ingress. It only runs an app so you can test it. 
+- To create actual deployment with your app, you may use` _deployment-eample.yaml` file. Replace the image name with your application image name. Please note that this deployment only exposes the app port as a kubernetes service. The app is accessible to other deployments in the cluster but the app ports are not exposed externally.
+Normally you would want to expose the app externally. For this an ingress resource needs to be configured. the cluster is already setup with AWS ingress controller (aws-load-balancer-controller) which managers ingress resources.
    `kubectl apply -f _deployment-example.yaml`
