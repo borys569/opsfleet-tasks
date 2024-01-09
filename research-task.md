@@ -23,3 +23,20 @@ The approach will look like this:
     - secrets can be mounted as files to the pods. This way, no code changes are required.
 
 Detailed information on this approach can be found here: https://community.aws/tutorials/navigating-amazon-eks/eks-integrate-secrets-manager
+
+## Kubernetes secrets
+
+Another simple solution is to use native kubernetes secrets. With this approach you can:
+- Avoid keeping secrets in the codebase, which is a big security risk;
+- Granularly control the application(pod) access to the secrets;  
+This approach covers the basic security risks while being easy to implement and manage. And in many cases, simple implementation means a robust system. Also less complexity means smaller attack surface. 
+And since we use a managed EKS service we can be certain that our etcd service is secure and backed up so we do not lose our secrets.
+
+
+## Hashicorp vault
+
+This is a more complex approach as one has to set up and manage the Hashicorp vault.
+- This approach is similar to the approach with AWS secret manager.
+- Secrets are stored in the vault;
+- Secrets can be mounted to pods as a volume. This requires the [Secrets Store CSI Driver](https://github.com/kubernetes-sigs/secrets-store-csi-driver).
+Hashicorp vault also supports other secret retrieval methods: apps can request the secrets from the vault via API or secrets can be injected into pods by [Vault Agent containers](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-sidecar).
